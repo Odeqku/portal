@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
@@ -67,16 +68,24 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\Models\User|\App\Models\Student|\App\Models\Admin
      */
-    public function create(array $data)
-    {
-        dd('HELLO');
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-        
-    }
+    
+     public function create(Request $request)
+{
+    
+    // Validate the registration data
+    $this->validator($request->all())->validate();
+    dd('...');
+    // Create the user
+    $user = User::create([
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'password' => Hash::make($request->input('password')),
+    ]);
+
+    // Return the user or redirect as needed
+    return $user;
+}
+
 
 
     // protected function createStudent(array $data)
