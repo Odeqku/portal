@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form method="GET" action="{{ route('registration') }}">
+                    <form method="POST" action="{{ route('registration') }}">
                         @csrf
 
                         <div class="row mb-3">

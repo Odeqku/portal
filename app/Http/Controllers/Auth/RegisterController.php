@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
-
+use App\Models\Faculty;
+use App\Models\AdminToken;
+use App\Models\Admin;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Student;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -26,6 +29,7 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
+    // protected $admin;
 
     /**
      * Where to redirect users after registration.
@@ -43,8 +47,10 @@ class RegisterController extends Controller
     {
         
         $this->middleware('guest');
+        // $this->admin = $
         
     }
+
 
     /**
      * Get a validator for an incoming registration request.
@@ -74,36 +80,102 @@ class RegisterController extends Controller
     
     // Validate the registration data
     $this->validator($request->all())->validate();
-    dd('...');
-    // Create the user
-    $user = User::create([
-        'name' => $request->input('name'),
-        'email' => $request->input('email'),
-        'password' => Hash::make($request->input('password')),
-    ]);
+    // dd($request['profile']);
 
-    // Return the user or redirect as needed
-    return $user;
+    if ($request['profile'] === 'Student') {
+        return $this->createStudent($request);
+    } elseif ($request['profile'] === 'Admin') {
+        return $this->createAdmin($request);
+    }
+    
+    return redirect('/register')->withErrors(['error' => 'Provide a valid token or register as a student']);
 }
 
 
 
-    // protected function createStudent(array $data)
-    // {
-    //     dd($data);
-    //     return User::create([
-    //         'name' => $data['name'],
-    //         'email' => $data['email'],
-    //         'password' => Hash::make($data['password']),
-    //     ]);
-    //     // return $newStudent;
-    // }
+    protected function createStudent($data)
+    {
+        
+        $faculty_id = json_decode($data['department'])->faculty_id;
+        
+        
+        $department_id = json_decode($data['department'])->id;
+        $count = Student::where('department_id', $department_id)->count();
+        
+        if(strlen((string)$count) < 2){
+            
+            $count += 1;
+            $count = '0' . $count;
+        }else{
+            $count += 1;
+        }
+
+        if(strlen((string)$department_id) < 2){
+            $department_id = '0' . $department_id;
+        }
+
+        if(strlen((string)$faculty_id) < 2) {
+            $faculty_id = '0' . $faculty_id;
+        }
+        
+        
+        $matricNumber = substr(date('Ymd'), 2, 2) . $department_id . $faculty_id . $count;
+        
+
+        
+            $newUser = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
+
+            $newStudent = Student::create([
+                'matric_number' => $matricNumber,
+                'department_id' => $department_id,
+                'faculty_id' => $faculty_id,
+                'name' => $data['name'],
+                'user_id' => $newUser->id,
+                'level_id' => 30,
+            ]);
+
+            $newProfile = $newStudent->profile()->create([
+                'user_id' => $newUser->id,
+                'profileable_id' => $newStudent->id,
+                'profileable_type' => 'Student',
+            ]);
+    
+
+            
+            return $newUser;
+    }
 
 
-    // protected function createAdmin(array $data)
-    // {
-    //     dd($data);
-    //     $newAdmin = '';
-    //     return $newAdmin;
-    // }
+    protected function createAdmin($data)
+    {
+        dd($data);
+        
+        $tokenExists = AdminToken::where('admin_token', $data['admin_token'])->exists();
+        if (!$tokenExists) {
+            return redirect('/register')->withErrors(['error' => 'Provide a valid token or register as a student']);
+        }
+
+        $adminUser = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
+
+        $admin = Admin::create([
+            'user_id' => $adminUser->id,
+        ]);
+
+        $adminProfile = $admin->profile()->create([
+            'user_id' => $adminUser->id,
+            'profileable_id' => $admin->id,
+            'profileable_type' => 'Admin',
+        ]);
+
+        
+        return $adminUser;
+    }
 }

@@ -45,7 +45,7 @@ Route::get('admin-home/', [AdminPageController::class, 'show'])->name('admin-hom
 
 
 Auth::routes();
-Route::get('registration', [App\Http\Controllers\Auth\RegisterController::class, 'create'])->name('registration');
+Route::post('registration', [App\Http\Controllers\Auth\RegisterController::class, 'create'])->name('registration');
 
 
 

@@ -67,7 +67,7 @@ class HomeController extends Controller
             if($profile === 'Admin'){
                 return view('pages.admin', compact('users', 'authorizedUser'));
             }
-            dd('hi');
+            // dd('hi');
             return view('pages.studentDashboard');
         }
     }
