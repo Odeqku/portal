@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
 use App\Models\AdminToken;
@@ -138,7 +139,7 @@ class RegisterController extends Controller
                 'level_id' => 30,
             ]);
 
-            $newProfile = $newStudent->profile()->create([
+            $newProfile = Profile::create([
                 'user_id' => $newUser->id,
                 'profileable_id' => $newStudent->id,
                 'profileable_type' => 'Student',
@@ -146,7 +147,7 @@ class RegisterController extends Controller
     
 
             
-            return $newUser;
+            return redirect('/')->with('success', $data['profile']. ' registered successfully. You can login now');
     }
 
 
@@ -169,13 +170,13 @@ class RegisterController extends Controller
             'user_id' => $adminUser->id,
         ]);
 
-        $adminProfile = $admin->profile()->create([
+        $adminProfile = Profile::create([
             'user_id' => $adminUser->id,
             'profileable_id' => $admin->id,
             'profileable_type' => 'Admin',
         ]);
 
         
-        return $adminUser;
+        return redirect('/')->with('success', $data['profile']. ' registered successfully. You can loging now');
     }
 }
