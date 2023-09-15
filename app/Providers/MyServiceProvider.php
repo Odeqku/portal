@@ -1,7 +1,13 @@
 <?php
 
 namespace App\Providers;
-use App\Providers\Services\AdminsService;
+// use App\Services;
+use App\Providers\Services\CreateAdminUserService;
+use App\Providers\Services\CreateStudentUser;
+use App\Providers\Services\CreateStudentUserService;
+use App\Providers\Services\NewUserService;
+use App\Providers\Services\StudentMatricNumberServices;
+use App\Providers\Services\UserService;
 use Illuminate\Support\ServiceProvider;
 
 class MyServiceProvider extends ServiceProvider
@@ -11,8 +17,24 @@ class MyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(AdminsService::class, function($app){
-            return new AdminsService($app);
+        $this->app->bind('user_service', function () {
+            return new UserService();
+        });
+
+        $this->app->bind('student_user_service', function (){
+            return new CreateStudentUserService();
+        });
+
+        $this->app->bind('student_matric_number_service', function (){
+            return new StudentMatricNumberServices();
+        });
+
+        $this->app->bind('new_user_service', function (){
+            return new NewUserService();
+        });
+
+        $this->app->bind('admin_user_service', function (){
+            return new CreateAdminUserService();
         });
     }
 

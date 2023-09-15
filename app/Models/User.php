@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Level::class);
     }
+
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
 }
