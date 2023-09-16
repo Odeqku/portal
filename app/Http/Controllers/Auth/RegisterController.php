@@ -75,6 +75,7 @@ class RegisterController extends Controller
         // Validates the registration data
         $this->validator($request->all())->validate();
 
+        // Resolving the service, 'user_service', to create a new user
         $user_service = app('user_service');
         return $user_service->newUser($request);
     }

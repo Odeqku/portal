@@ -24,10 +24,10 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::get('/', [PagesController::class, 'index']);
-// dd('ki');
+
 Route::get('/token', [TokenController::class, 'index']);
 
-// dd('ki1');
+
 Route::post('/tokens_for_admins', [TokenController::class, 'store'])->name('tokens');
 
 Route::resource('courses', CoursesController::class);

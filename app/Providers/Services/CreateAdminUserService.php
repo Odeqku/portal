@@ -8,12 +8,12 @@ use App\Models\Profile;
 class CreateAdminUserService
 {
     public function createAdminUser($data)
-    {
-         
-        
+    {        
         $tokenExists = AdminToken::where('admin_token', $data['token'])->exists();
+        
         if (!$tokenExists) {
-            return redirect('/registration')->withErrors(['error' => 'Provide a valid token or register as a student']);
+            return redirect('/registration')
+            ->withErrors(['error' => 'Provide a valid token or register as a student']);
         }
 
         $new_user = app('new_user_service');
@@ -30,7 +30,8 @@ class CreateAdminUserService
         ]);
 
         
-        return redirect('/')->with('success', $data['profile']. ' registered successfully. You can loging now');
+        return redirect('/')
+        ->with('success', $data['profile']. ' registered successfully. You can loging now');
     
     }
 }

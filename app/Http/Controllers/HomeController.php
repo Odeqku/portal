@@ -33,43 +33,30 @@ class HomeController extends Controller
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
-    {
-        // dd('HomeController');
-        
-        $users = User::all();
-        $authorizedUser = auth()->user();
-        $profile = $authorizedUser->profile->profileable_type;
+    {       
 
-        try{
+        // try{
+            $complete_reg = app('complete_reg_service');
+            return $complete_reg->reload();            
             
-            if(!$authorizedUser->student->course_student->count()){
-                // dd('hui');
-                $studentDetailsIsEmpty = $authorizedUser->student->details->isEmpty();
-                $levels = Level::all();
-                $semesters = ['first semester', 'second semester'];
-
-                return view('home', compact('studentDetailsIsEmpty', 'levels', 'semesters'))->with('success', 'Personal Details Successfully Saved');
-
-            }elseif($profile === 'Admin'){
-                
-                return view('pages.admin');
-            }else{
-                // dd("////");
-                if($authorizedUser->student->details->isEmpty()){
-                    // dd("////");
-                    return view('pages.registerDetails');
-                }
-                // dd('hii');
-                return view('pages.studentDashboard');
-            }
+            // if($profile === 'Admin'){                
+            //     return view('pages.admin');
+            // }else{
+            
+            //     if($authorizedUser->student->details->isEmpty()){                    
+            //         return view('pages.registerDetails');
+            //     }else{                
+            //         return view('pages.studentDashboard');
+            //     }
+            // }
         
-        }catch(\Exception $e){
-            if($profile === 'Admin'){
-                return view('pages.admin', compact('users', 'authorizedUser'));
-            }
-            // dd('hi');
-            return view('pages.studentDashboard');
-        }
+        // }catch(\Exception $e){
+        //     if($profile === 'Admin'){
+        //         return view('pages.admin', compact('users', 'authorizedUser'));
+        //     }
+        //     // dd('hi');
+        //     return view('pages.studentDashboard');
+        // }
     }
 
     public function register()
