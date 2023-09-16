@@ -6,8 +6,7 @@ class UserService
 {
     public function newUser($request)
     {
-        // dd($request);
-
+        
         if ($request['profile'] === 'Student') {
             $student_user = app('student_user_service');
             return $student_user->createStudentUser($request);

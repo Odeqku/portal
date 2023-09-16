@@ -1,5 +1,6 @@
-
-
+<?php
+    // dd('Here');
+?>
 @extends('layouts.app')
 
 
@@ -13,7 +14,7 @@
                         <table class="table table-striped">
                         
                                 
-                                @foreach($departments::all() as $department)
+                                @foreach($departments as $department)
 
                                     <tr>
                                         <div class="card-title">
@@ -48,7 +49,6 @@
                 @endif
             </div>
     </div>
-
-@endsection()
+@endsection
 
 

@@ -3,6 +3,10 @@
 namespace App\Providers;
 use App\Providers\Services\AdminServices\AdminPageServices;
 use App\Providers\Services\AdminServices\CreateAdminUserService;
+use App\Providers\Services\DataBaseServices\ReturnAllCoursesAndDepartmentsServices;
+use App\Providers\Services\DataBaseServices\ReturnAllCoursesService;
+use App\Providers\Services\DataBaseServices\ReturnAllDepartmentsServices;
+use App\Providers\Services\DataBaseServices\ReturnAllFacultiesAndSemestersServices;
 use App\Providers\Services\ImageFileServices\SaveImageServices;
 use App\Providers\Services\StudentServices\CreateStudentUserService;
 use App\Providers\Services\DataBaseServices\ReturnAllLevelsServices;
@@ -100,8 +104,21 @@ class MyServiceProvider extends ServiceProvider
             return new StudentSponsorService();
         });
 
-
+        $this->app->bind('courses_service', function (){
+            return new ReturnAllCoursesService();
+        });
     
+        $this->app->bind('departments_service', function (){
+            return new ReturnAllDepartmentsServices();
+        });
+
+        $this->app->bind('courses_and_departments_service', function (){
+            return new ReturnAllCoursesAndDepartmentsServices();
+        });
+
+        $this->app->bind('faculties_and_semesters_service', function (){
+            return new ReturnAllFacultiesAndSemestersServices();
+        });
     }
 
     /**

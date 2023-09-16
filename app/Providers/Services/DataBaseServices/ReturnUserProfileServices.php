@@ -6,7 +6,7 @@ use App\Models\User;
 class ReturnUserProfileServices
 {
     public function userProfile()
-    {
-        return auth()->user()->profile->profileable_type;
+    {   
+        return app('users_service')->authUser()->profile->profileable_type;
     }
 }

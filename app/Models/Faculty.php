@@ -14,7 +14,7 @@ class Faculty extends Model
 
 
 
-    public static $faculties = ['Science', 'Engineering', 'Art', 'Management'];
+    public static $faculties = ['Science', 'Engineering', 'Art', 'Management', 'Education', 'Social Sciences', 'Medicine'];
 
 
     public function student()

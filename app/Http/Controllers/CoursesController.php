@@ -24,33 +24,18 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        if(!(auth()->user()->profile->profileable_type === 'Student')){
-            $Course = Course::all();
-            $departments = Department::class;
-            // $departments = Department::all();
-            return view('courses.show')
-            ->with('departments', $departments)
-            ->with('courses', $Course);
-        }
-
-            return redirect('/home');
+        
+        return app('courses_and_departments_service')->coursesAndDepartments();        
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
-    {
-        // dd('hi');
-        if(!(auth()->user()->profile->profileable_type === 'Student')){
-        $faculties = Faculty::$faculties;
-        $semesters = ['first semester', 'second semester'];
-        return view('courses.register', compact('faculties', 'semesters'));
-        }
-
+    {      
         
-
-        return redirect('/home');
+        return app('faculties_and_semesters_service')->facultiesAndSemesters();   
+        
     }
 
     /**
