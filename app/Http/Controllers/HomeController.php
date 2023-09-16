@@ -1,10 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\GuardianDetails;
-use App\Models\NextOfKinDetails;
-use App\Models\PersonalDetails;
-use App\Models\SponsorDetails;
 use Illuminate\Http\Request;
 
 
