@@ -1,5 +1,5 @@
 <?php
-namespace App\Providers\Services;
+namespace App\Providers\Services\StudentServices;
 use App\Models\Profile;
 use App\Models\Student;
 use App\Models\User;

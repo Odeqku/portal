@@ -1,5 +1,5 @@
 <?php
-namespace App\Providers\Services;
+namespace App\Providers\Services\DataBaseServices;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 

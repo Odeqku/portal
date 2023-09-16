@@ -1,9 +1,8 @@
 <?php
 
 namespace App\Providers\Services\AdminServices;
-use App\Models\User;
 
-class AdminServices
+class AdminPageServices
 {
     public function redirectToAdminPage()
     {

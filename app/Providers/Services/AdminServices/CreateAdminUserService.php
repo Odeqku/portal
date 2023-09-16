@@ -1,5 +1,5 @@
 <?php
-namespace App\Providers\Services;
+namespace App\Providers\Services\AdminServices;
 use App\Models\Admin;
 use App\Models\AdminToken;
 use App\Models\Profile;
