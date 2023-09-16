@@ -1,19 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\CourseAccess;
-use App\Models\Department;
 use App\Models\GuardianDetails;
-use App\Models\Lecturer;
 use App\Models\NextOfKinDetails;
 use App\Models\PersonalDetails;
 use App\Models\SponsorDetails;
 use Illuminate\Http\Request;
-use App\Models\Level;
-use App\Models\Course;
-use App\Models\Admin;
-use App\Models\User;
+
 
 class HomeController extends Controller
 {
@@ -44,247 +37,69 @@ class HomeController extends Controller
     }
 
     public function store(Request $request)
-    {   
-        $user = auth()->user();  
+    {           
+        $user = app('users_service') ->authUser();
+        $studentUser = app('users_service')->studentUser();
+        $data = app('validate_reg_request_services')->validateRegRequest($request);
 
-        if($user->student->details->isEmpty() && $request->has('level')){
-
-            $this->validate($request, [
-            'matric_number' => 'required',
-            'semester' => 'required',
-            'level' => 'required',
-
-            // Personal Details
-            'sex' => 'required',
-            'state_of_origin' => 'required',
-            'LGA_of_origin' => 'required',
-            'date_of_birth' => 'required',
-            'telephone' => 'required',
-            'home_address' => 'required',
-            'photograph' => 'required',
-
-            // Next of Kin's Details
-            'name' => 'required',
-            'address' => 'required',
-            'relationship' => 'required',
-            'phone' => 'required',
-            'email' => 'required',
-
-            // Guardian's Details
-            'guardian_name' => 'required',
-            'guardian_address' => 'required',
-            'guardian_telephone' => 'required',
-            'guardian_email' => 'required',
-
-            //Sponsor's Details
-            'sponsor_name' => 'required',
-            'sponsor_address' => 'required',
-            'sponsor_telephone' => 'required',
-            'sponsor_email' => 'required'
-            ]);
-
-        }else{
-            $this->validate($request, [
-                'matric_number' => 'required',
-                'semester' => 'required',
-                'level' => 'required',
-            ]);
-        }
-        // dd('');
-        $studentDetailsRequest = $request;
-        // session(['studentDetailsRequest' => $request]);
+        $this->validate($request, $data);        
+                     
+        if($studentUser->details->isEmpty()){
+            $fileNameToStore = app('save_image_services')->saveUploadedImage($request);        
         
-        $studentId= $user->student->id;
+            app('student_details_service')->createStudentDetails($request, $fileNameToStore);             
+        }
+
+        if($studentUser->kins->isEmpty()){
+            // dd('hello');
+            app('student_next_of_kin_service')->createNextOfKin($request);
+        }
+
+        if($studentUser->guardians->isEmpty()){
+            // dd('hiii');
+           app('student_guardian_service')->createStudentGuardian($request);
+        }
+
+        if($studentUser->sponsors->isEmpty()){
+            app('student_sponsor_service')->createStudentSponsor($request);
+        }
+         
         
-        if($user->student->details->isEmpty()){
-            if($request->hasFile('photograph')){
-                //get filename with the extention 
-                $filenameWithExt = $request->file('photograph')->getClientOriginalName();
-                
-                //get just filename
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                
-                // get just ext
-                $extension = $request->file('photograph')->getClientOriginalExtension();
-            
-                //filename to store
-                $fileNameToStore = $filename . '_'. time(). '.' . $extension;
-            
-                //
-                $path = $request->file('photograph')->storeAs('public/studentPhoto',$fileNameToStore);
-            }else{
-                
-                $fileNameToStore = 'noimage.jpg';
-            }
-
-        
-            $newPersonalDetails = PersonalDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'sex' => $request['sex'],
-                'state_of_origin' => $request['state_of_origin'],
-                'LGA_of_origin' => $request['LGA_of_origin'],
-                'date_of_birth' => $request['date_of_birth'],
-                'telephone' => $request['telephone'],
-                'home_address' => $request['home_address'], 
-                'photograph' => $fileNameToStore,
-            ]);
-        }
-
-        if($user->student->kins->isEmpty()){
-            $newNextOfKinDetails = NextOfKinDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'name' => $request['name'],
-                'address' => $request['address'],
-                'relationship' => $request['relationship'],
-                'phone' => $request['phone'],
-                'email' => $request['email'],
-            ]);
-        }
-
-        if($user->student->guardians->isEmpty()){
-            $newGuardianDetails = GuardianDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'guardian_name' => $request['guardian_name'],
-                'guardian_address' => $request['guardian_address'],
-                'guardian_telephone' => $request['guardian_telephone'],
-                'guardian_email' => $request['guardian_email'],
-            ]);
-        }
-
-        if($user->student->sponsors->isEmpty()){
-            $newSponsorDetails = SponsorDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'sponsor_name' => $request['sponsor_name'],
-                'sponsor_address' => $request['sponsor_address'],
-                'sponsor_telephone' => $request['sponsor_telephone'],
-                'sponsor_email' => $request['sponsor_email'],
-            ]);
-        }
-        
-        $student = $user->student;  
-              
-        $levelCourses = $student->level->course;
-        $studentCourseIds = $student->department                            
+        $levelCourses = $studentUser->level->course;
+        $studentCourseIds = $studentUser->department                            
                             ->course_accesses
                             ->where('semester', $request['semester'])
                             ->pluck('course_id')                            
                             ->toArray(); 
 
-        // dd(auth()->user()->student->course_student);
-
-    // if($student->course)
         return view('courses.studentRegister', compact('levelCourses', 'studentCourseIds'));
     }
 
 
     public function storeStudentDetails(Request $request)
     {
-        // dd('_-_-_');
-        $user = auth()->user();
-        $this->validate($request, [
-                    
-            // Personal Details
-            'sex' => 'required',
-            'state_of_origin' => 'required',
-            'LGA_of_origin' => 'required',
-            'date_of_birth' => 'required',
-            'telephone' => 'required',
-            'home_address' => 'required',
-            'photograph' => 'required',
+        $studentUser = app('users_service')->studentUser();
 
-            // Next of Kin's Details
-            'name' => 'required',
-            'address' => 'required',
-            'relationship' => 'required',
-            'phone' => 'required',
-            'email' => 'required',
-
-            // Guardian's Details
-            'guardian_name' => 'required',
-            'guardian_address' => 'required',
-            'guardian_telephone' => 'required',
-            'guardian_email' => 'required',
-
-            //Sponsor's Details
-            'sponsor_name' => 'required',
-            'sponsor_address' => 'required',
-            'sponsor_telephone' => 'required',
-            'sponsor_email' => 'required'
-            ]);
+        $this->validate($request, app('validate_reg_request_services')->data2);
     
-    
-            // dd('_-_-_.');
-        $studentId= $user->student->id;
-    
-        //Process the image
 
-        if($user->student->details->isEmpty()){
-            if($request->hasFile('photograph')){
-                //get filename with the extention 
-                $filenameWithExt = $request->file('photograph')->getClientOriginalName();
-                
-                //get just filename
-                $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-                
-                // get just ext
-                $extension = $request->file('photograph')->getClientOriginalExtension();
-            
-                //filename to store
-                $fileNameToStore = $filename . '_'. time(). '.' . $extension;
-            
-                //
-                $path = $request->file('photograph')->storeAs('public/studentPhoto',$fileNameToStore);
-            }else{
-                
-                $fileNameToStore = 'noimage.jpg';
-            }
+        if($studentUser->details->isEmpty()){
+            $fileNameToStore = app('save_image_services')->saveUploadedImage($request);
 
-            // dd('_-_-_');
-        $newPersonalDetails = PersonalDetails::firstOrCreate([
-            'student_id' => $studentId,
-            'sex' => $request['sex'],
-            'state_of_origin' => $request['state_of_origin'],
-            'LGA_of_origin' => $request['LGA_of_origin'],
-            'date_of_birth' => $request['date_of_birth'],
-            'telephone' => $request['telephone'],
-            'home_address' => $request['home_address'], 
-            'photograph' => $fileNameToStore,
-            ]);
+            app('student_details_service')->createStudentDetails($request, $fileNameToStore); 
         }
 
-        if($user->student->kins->isEmpty()){
-            $newNextOfKinDetails = NextOfKinDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'name' => $request['name'],
-                'address' => $request['address'],
-                'relationship' => $request['relationship'],
-                'phone' => $request['phone'],
-                'email' => $request['email'],
-            ]);
+        if($studentUser->kins->isEmpty()){
+            app('student_next_of_kin_service')->createNextOfKin($request);
         }
 
-        if($user->student->guardians->isEmpty()){
-            $newGuardianDetails = GuardianDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'guardian_name' => $request['guardian_name'],
-                'guardian_address' => $request['guardian_address'],
-                'guardian_telephone' => $request['guardian_telephone'],
-                'guardian_email' => $request['guardian_email'],
-            ]);
-        }
+        if($studentUser->guardians->isEmpty()){
+            app('student_guardian_service')->createStudentGuardian($request);
+         }
 
-        if($user->student->sponsors->isEmpty()){
-            $newSponsorDetails = SponsorDetails::firstOrCreate([
-                'student_id' => $studentId,
-                'sponsor_name' => $request['sponsor_name'],
-                'sponsor_address' => $request['sponsor_address'],
-                'sponsor_telephone' => $request['sponsor_telephone'],
-                'sponsor_email' => $request['sponsor_email'],
-            ]);
+         if($studentUser->sponsors->isEmpty()){
+            app('student_sponsor_service')->createStudentSponsor($request);
         }
-     
-
-        // dd(auth()->user()->student);
 
         return redirect('/home')->with('success', 'Details registered successfully');
     }
