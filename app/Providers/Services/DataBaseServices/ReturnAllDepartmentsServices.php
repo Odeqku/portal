@@ -7,6 +7,7 @@
     class ReturnAllDepartmentsServices
 
     {
+        // departments_service
         public function allDepartments()
         {
             return Department::all();

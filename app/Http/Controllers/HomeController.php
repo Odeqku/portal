@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Providers\Services\DataBaseServices\ReturnAllUsersServices;
+use App\Providers\Services\StudentServices\CompleteRegService;
+use App\Providers\Services\UserService;
+use App\Providers\Services\ValidationServices\ValidateRegRequestServices;
 use Illuminate\Http\Request;
 
 
@@ -21,10 +25,9 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {      
-        $complete_reg = app('complete_reg_service');
-        return $complete_reg->reload();            
+    public function index(CompleteRegService $r)
+    {           
+        return $r->reload();            
     }
 
     public function register()
@@ -32,11 +35,11 @@ class HomeController extends Controller
         return view('courses.studentRegister');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, ReturnAllUsersServices $user, ValidateRegRequestServices $v)
     {           
-        $user = app('users_service') ->authUser();
-        $studentUser = app('users_service')->studentUser();
-        $data = app('validate_reg_request_services')->validateRegRequest($request);
+        $user = $user ->authUser();
+        $studentUser = $user->studentUser();
+        $data = $v->validateRegRequest($request);
 
         $this->validate($request, $data);        
                      
@@ -47,12 +50,12 @@ class HomeController extends Controller
         }
 
         if($studentUser->kins->isEmpty()){
-            // dd('hello');
+            
             app('student_next_of_kin_service')->createNextOfKin($request);
         }
 
         if($studentUser->guardians->isEmpty()){
-            // dd('hiii');
+            
            app('student_guardian_service')->createStudentGuardian($request);
         }
 
@@ -72,11 +75,11 @@ class HomeController extends Controller
     }
 
 
-    public function storeStudentDetails(Request $request)
+    public function storeStudentDetails(Request $request, ReturnAllUsersServices $user, ValidateRegRequestServices $v)
     {
-        $studentUser = app('users_service')->studentUser();
+        $studentUser = $user->studentUser();
 
-        $this->validate($request, app('validate_reg_request_services')->data2);
+        $this->validate($request, $v->data2);
     
 
         if($studentUser->details->isEmpty()){

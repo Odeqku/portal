@@ -3,6 +3,7 @@
 namespace App\Providers;
 use App\Providers\Services\AdminServices\AdminPageServices;
 use App\Providers\Services\AdminServices\CreateAdminUserService;
+use App\Providers\Services\AdminServices\CreateCourseServices;
 use App\Providers\Services\DataBaseServices\ReturnAllCoursesAndDepartmentsServices;
 use App\Providers\Services\DataBaseServices\ReturnAllCoursesService;
 use App\Providers\Services\DataBaseServices\ReturnAllDepartmentsServices;
@@ -118,6 +119,10 @@ class MyServiceProvider extends ServiceProvider
 
         $this->app->bind('faculties_and_semesters_service', function (){
             return new ReturnAllFacultiesAndSemestersServices();
+        });
+
+        $this->app->bind('create_course_services', function() {
+            return new CreateCourseServices();
         });
     }
 
