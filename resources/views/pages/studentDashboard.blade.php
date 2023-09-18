@@ -9,7 +9,7 @@
     <div class="card-header">
         
         
-    
+        @include('inc.message')
         <h3>Student ID</h3>
     </div>
     <div class="card-body">

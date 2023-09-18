@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Providers\Services\AdminServices\CreateCourseServices;
-use App\Providers\Services\DataBaseServices\ReturnAllCoursesAndDepartmentsServices;
-use App\Providers\Services\DataBaseServices\ReturnAllFacultiesAndSemestersServices;
+use App\Providers\Services\AdminServices\CreateCourseServices as CCS;
+use App\Providers\Services\DataBaseServices\ReturnAllCoursesAndDepartmentsServices as CrsDept;
+use App\Providers\Services\DataBaseServices\ReturnAllFacultiesAndSemestersServices as fcltSem;
 use Illuminate\Http\Request;
-use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\RegistrationRequest as RegR;
 
 class CoursesController extends Controller
 {
+    
     
     public function __construct()
     {
@@ -20,7 +21,7 @@ class CoursesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ReturnAllCoursesAndDepartmentsServices $Cd)
+    public function index(CrsDept $Cd)
     {        
         return $Cd->coursesAndDepartments();        
     }
@@ -28,7 +29,7 @@ class CoursesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(ReturnAllFacultiesAndSemestersServices $u)
+    public function create(fcltSem $u)
     {      
         
         return $u->facultiesAndSemesters(); 
@@ -38,13 +39,13 @@ class CoursesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RegistrationRequest $request, CreateCourseServices $c)
+    public function store(RegR $request, CCS $c)
     {
         return $c->createCourse($request);
     }
 
 
-    public function storeCourseAccess(Request $request, CreateCourseServices $c)
+    public function storeCourseAccess(Request $request, CCS $c)
     {
         
         $newCourse_access = $c->createCourseAccess($request);

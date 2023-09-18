@@ -1,20 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Department;
-use App\Models\Faculty;
+use App\Providers\Services\DataBaseServices\FacultiesServices;
+use App\Providers\Services\DataBaseServices\ReturnAllDepartmentsServices;
+use App\Providers\Services\DataBaseServices\ReturnUserProfileServices;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
-    public function index()
+        public function index(ReturnAllDepartmentsServices $dept, FacultiesServices $fclt, ReturnUserProfileServices $userProf)
     {
-        // dd('Fooo');
-        $departments = Department::all();
-        $faculties = Faculty::all();
-        $profiles = ['Student', 'Admin'];
-        // dd($departments);
+        $departments = $dept->allDepartments();
+        $faculties = $fclt->allFaculties();
+        $profiles = $userProf->userProfile();
+        
         return view('auth.register', compact('departments', 'faculties', 'profiles'));
     }
 }

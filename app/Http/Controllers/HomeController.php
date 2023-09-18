@@ -2,22 +2,36 @@
 
 namespace App\Http\Controllers;
 use App\Providers\Services\DataBaseServices\ReturnAllUsersServices;
+use App\Providers\Services\ImageFileServices\SaveImageServices;
 use App\Providers\Services\StudentServices\CompleteRegService;
-use App\Providers\Services\UserService;
+use App\Providers\Services\StudentServices\StudentGuardianDetailsService;
+use App\Providers\Services\StudentServices\StudentNextOfKinsService;
+use App\Providers\Services\StudentServices\StudentPersonalDetailsService;
+use App\Providers\Services\StudentServices\StudentSponsorService;
 use App\Providers\Services\ValidationServices\ValidateRegRequestServices;
 use Illuminate\Http\Request;
 
 
 class HomeController extends Controller
 {
+    private $sImg;
+    private $stdD;
+    private $stdNxt;
+    private $stdG;
+    private $stdSp;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SaveImageServices $sImg, StudentPersonalDetailsService $stdD, StudentNextOfKinsService $stdNxt, StudentGuardianDetailsService $stdG, StudentSponsorService $stdSp)
     {
         $this->middleware('auth');
+        $this->sImg = $sImg;
+        $this->stdD = $stdD;
+        $this->stdNxt = $stdNxt;
+        $this->stdG = $stdG;
+        $this->stdSp = $stdSp;
     }
 
     /**
@@ -43,23 +57,22 @@ class HomeController extends Controller
         $this->validate($request, $data);        
                      
         if($studentUser->details->isEmpty()){
-            $fileNameToStore = app('save_image_services')->saveUploadedImage($request);        
+            $fileNameToStore = $this->sImg->saveUploadedImage($request);        
         
-            app('student_details_service')->createStudentDetails($request, $fileNameToStore);             
+            $this->stdD->createStudentDetails($request, $fileNameToStore);             
         }
 
-        if($studentUser->kins->isEmpty()){
-            
-            app('student_next_of_kin_service')->createNextOfKin($request);
+        if($studentUser->kins->isEmpty()){            
+            $this->stdNxt->createNextOfKin($request);
         }
 
         if($studentUser->guardians->isEmpty()){
             
-           app('student_guardian_service')->createStudentGuardian($request);
+           $this->stdG->createStudentGuardian($request);
         }
 
         if($studentUser->sponsors->isEmpty()){
-            app('student_sponsor_service')->createStudentSponsor($request);
+            $this->stdSp->createStudentSponsor($request);
         }
          
         
@@ -82,23 +95,24 @@ class HomeController extends Controller
     
 
         if($studentUser->details->isEmpty()){
-            $fileNameToStore = app('save_image_services')->saveUploadedImage($request);
+            $fileNameToStore = $this->sImg->saveUploadedImage($request);
 
-            app('student_details_service')->createStudentDetails($request, $fileNameToStore); 
+            $this->stdD->createStudentDetails($request, $fileNameToStore); 
         }
 
         if($studentUser->kins->isEmpty()){
-            app('student_next_of_kin_service')->createNextOfKin($request);
+            $this->stdNxt->createNextOfKin($request);
         }
 
         if($studentUser->guardians->isEmpty()){
-            app('student_guardian_service')->createStudentGuardian($request);
+            $this->stdG->createStudentGuardian($request);
          }
 
          if($studentUser->sponsors->isEmpty()){
-            app('student_sponsor_service')->createStudentSponsor($request);
+            $this->stdSp->createStudentSponsor($request);
         }
 
-        return redirect('/home')->with('success', 'Details registered successfully');
+        return redirect('/home')
+        ->with('success', 'Details registered successfully');
     }
 }

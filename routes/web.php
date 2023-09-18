@@ -23,10 +23,10 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', [PagesController::class, 'index']);
 
 
-Route::group(['prefix' => '/'], function(){
+Route::middleware('admin:Admin')->group(function(){
 
-    Route::post('tokens_for_admins', [TokenController::class, 'store'])->name('tokens');
-    Route::get('token', [TokenController::class, 'index'])->name('token');
+    Route::post('/tokens_for_admins', [TokenController::class, 'store'])->name('tokens');
+    Route::get('/token', [TokenController::class, 'index'])->name('token');
 });
 
 Route::group(['prefix' => '/'], function () {

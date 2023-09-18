@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers\Services\DataBaseServices;
-use App\Models\User;
+
 
 class ReturnUserProfileServices
 {
