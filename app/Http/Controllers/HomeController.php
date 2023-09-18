@@ -36,8 +36,7 @@ class HomeController extends Controller
     }
 
     public function store(Request $request, ReturnAllUsersServices $user, ValidateRegRequestServices $v)
-    {           
-        $user = $user ->authUser();
+    {        
         $studentUser = $user->studentUser();
         $data = $v->validateRegRequest($request);
 
