@@ -4,7 +4,7 @@
     use App\Models\Faculty;   
 
 
-    class FacultiesServices
+    class FacultyServices
 
     {
         // departments_service

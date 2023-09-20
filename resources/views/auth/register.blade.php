@@ -99,9 +99,9 @@
                                                     document.getElementById('Admin_token').style.display = 'block';
                                                     document.getElementById('Admin_token').setAttribute('placeholder', 'Provide a Token');
                                                     document.getElementById('department').style.display = 'none';
-                                                    document.getElementById('faculty').style.display = 'none';
-                                                    
+                                                    document.getElementById('faculty').style.display = 'none';                                                    
                                                 }else{
+
                                                     document.getElementById('Admin_token').style.display = 'none';
                                                     document.getElementById('department').style.display = 'block';
                                                     // document.getElementById('faculty').style.display = 'block';
@@ -110,7 +110,11 @@
 
                                     <option value="" name='profile'>Register as:</option>
                                     @foreach($profiles as $profile)
-                                    <option value="{{ $profile }}" name='profile'>{{ $profile }}</option>
+                                    
+                                        
+                                            <option value="{{ $profile->name }}" name='profile'>{{ $profile->name }}</option>
+                                        
+                                    
                                     @endforeach
                                 </select>
                             </div>

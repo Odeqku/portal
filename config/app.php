@@ -192,6 +192,7 @@ return [
         // 'Form' => Collective\Html\FormFacade::class,
         // 'Html' => Collective\Html\HtmlFacade::class,
         // 'Example' => App\Facades\Example::class,
+        'Permission' => Spatie\Permission\Facades\Permission::class,
     ])->toArray(),
 
 ];

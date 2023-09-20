@@ -29,7 +29,8 @@ class CreateAdminUserService
             'profileable_type' => 'Admin',
         ]);
 
-        
+        $newUser->assignRole('Admin');
+
         return redirect('/')
         ->with('success', $data['profile']. ' registered successfully. You can loging now');
     

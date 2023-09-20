@@ -23,13 +23,13 @@ use Illuminate\Support\Facades\Auth;
 Route::get('/', [PagesController::class, 'index']);
 
 
-Route::middleware('admin:Admin')->group(function(){
+Route::middleware('role:Admin')->group(function(){
 
     Route::post('/tokens_for_admins', [TokenController::class, 'store'])->name('tokens');
     Route::get('/token', [TokenController::class, 'index'])->name('token');
 });
 
-Route::group(['prefix' => '/'], function () {
+Route::middleware('role:Student')->group(function () {
 
     Route::post('course/registeration', [HomeController::class, 'store'])->name('studentReg');
     Route::post('home', [HomeController::class, 'storeStudentDetails'])->name('studentDetails');
@@ -37,14 +37,14 @@ Route::group(['prefix' => '/'], function () {
     Route::get('home/studentRegister', [App\Http\Controllers\HomeController::class, 'register'])->name('home');
 });
 
-// Admin
-Route::group(['profile' => '/'], function() {
+
+Route::middleware('role:Admin')->group(function() {
 
     Route::get('user_profile/{user}', [AdminPageController::class, 'index'])->name('user_profile');
     Route::get('admin-home/', [AdminPageController::class, 'show'])->name('admin-home');
 });
 
-Route::group(['prefix' => '/'], function() {
+Route::middleware('role:Admin')->group(function() {
 
     Route::resource('courses', CoursesController::class);
     Route::post('course_acsess', [CoursesController::class, 'storeCourseAccess'])->name('course_access');

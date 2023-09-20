@@ -11,7 +11,7 @@ class CreateStudentUserService
     public function createStudentUser($data)
     {
         // dd('Service');
-
+        // Generating matric number
         $student_matric_number = app('student_matric_number_service');
         $matricNumber = $student_matric_number->matricNumber($data);
 
@@ -33,6 +33,8 @@ class CreateStudentUserService
             'profileable_id' => $newStudent->id,
             'profileable_type' => 'Student',
         ]);
+
+        $newUser->assignRole('Student');
             
         return redirect('/')->with('success', $data['profile']. ' registered successfully. You can login now');
     }

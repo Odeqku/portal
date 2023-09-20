@@ -2,13 +2,11 @@
 
 namespace App\Http\Middleware;
 
-use App\Providers\Services\DataBaseServices\ReturnUserProfileServices as P;
-
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AdminAccess
+class UserAccess
 {
     /**
      * Handle an incoming request.
@@ -17,15 +15,16 @@ class AdminAccess
      */
     public function handle(Request $request, Closure $next, $role)
     {
+        
         if(Auth::check()){
             
-            if(app('profile_service')->userProfile() === $role){
+            if(app('users_service')->authUser()->hasRole($role)){
         
                 return $next($request);
             }
         }
         
-        // dd('redirect');
+        
         return redirect('/home')
         ->with('error', 'Unauthorized. You do not have permission to access this resource.');
     }
