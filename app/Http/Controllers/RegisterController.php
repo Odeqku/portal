@@ -12,34 +12,35 @@ class RegisterController extends Controller
     {
         // dd();
         // $count = 0;
-        $permission = \Spatie\Permission\Models\Permission::findByName('edit profile');
+        // $permission = \Spatie\Permission\Models\Permission::findByName('edit profile');
         // dd($permission);
-        $stds = \App\Models\Admin::all();
-        $roles = Role::all();
+        // $stds = \App\Models\Admin::all();
+        // $roles = Role::all();
         // dd($roles);
-        foreach($stds as $std){
-            foreach($roles as $role){
-                if($role->name === 'Admin'){
-                    // echo $role->name . ' :' . '<br />';
-                    // echo $std->id . ' :' . '<br />';
-                    // echo $std->name . ' :' . '<br />';
-                    foreach ($role->permissions as $key => $value) {
-                        // echo $key . ':' . $value->id . ' ';
-                        // echo $value['name'] . '<br />';
-                        // echo $std . '<br />';
-                        // echo $value['name'];
-                        $std->permissions()->attach($value->id);
-                    }
-                    // echo '<br />';
-                }
-            }
-        }
+        // foreach($stds as $std){
+            // foreach($roles as $role){
+            //     if($role->name === 'Admin'){
+            //         // echo $role->name . ' :' . '<br />';
+            //         // echo $std->id . ' :' . '<br />';
+            //         // echo $std->name . ' :' . '<br />';
+            //         foreach ($role->permissions as $key => $value) {
+            //             // echo $key . ':' . $value->id . ' ';
+            //             // echo $value['name'] . '<br />';
+            //             // echo $std . '<br />';
+            //             // echo $value['name'];
+            //             // $std->permissions()->attach($value->id);
+            //         }
+            //         // echo '<br />';
+            //     }
+            // }
+            // echo $std->permissions;
+        // }
             
         //    echo $role->permissions . '<br />';
         
-        dd('hi');
-        $user = \App\Models\User::find(7);
-        dd($user->permissions());
+        // dd('done');
+        // $user = \App\Models\User::find(7);
+        // dd($user->permissions());
         // foreach($users as $user){
         //     if((Admin::where('user_id', $user->id)->exists())){
         //         $user->assignRole('Admin');
