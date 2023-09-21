@@ -25,8 +25,8 @@ Route::get('/', [PagesController::class, 'index']);
 
 Route::middleware('role:Admin')->group(function(){
 
-    Route::post('/tokens_for_admins', [TokenController::class, 'store'])->name('tokens');
-    Route::get('/token', [TokenController::class, 'index'])->name('token');
+    Route::post('admin/tokens', [TokenController::class, 'store'])->name('tokens');
+    Route::get('admin/token', [TokenController::class, 'index'])->name('token');
 });
 
 Route::middleware('role:Student')->group(function () {
@@ -40,18 +40,18 @@ Route::middleware('role:Student')->group(function () {
 
 Route::middleware('role:Admin')->group(function() {
 
-    Route::get('user_profile/{user}', [AdminPageController::class, 'index'])->name('user_profile');
-    Route::get('admin-home/', [AdminPageController::class, 'show'])->name('admin-home');
+    Route::get('user/profile/{user}', [AdminPageController::class, 'index'])->name('user_profile');
+    Route::get('admin/home/', [AdminPageController::class, 'show'])->name('admin-home');
 });
 
 Route::middleware('role:Admin')->group(function() {
 
     Route::resource('courses', CoursesController::class);
-    Route::post('course_acsess', [CoursesController::class, 'storeCourseAccess'])->name('course_access');
+    Route::post('course/acsess', [CoursesController::class, 'storeCourseAccess'])->name('course_access');
 });
 
 
-Route::post('submit', [RegisteredCoursesController::class, 'store'])->name('course_submit');
+Route::post('course/submitted', [RegisteredCoursesController::class, 'store'])->name('course_submit');
 
 
 Auth::routes();

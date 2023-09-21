@@ -1,13 +1,11 @@
 <?php
 namespace App\Providers\Services\StudentServices;
 use App\Models\Profile;
-use App\Models\Student;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
+use App\Providers\Services\DataBaseServices\createModelHasPermissionsService as ModelHasP;
 
 
-class CreateStudentUserService
+
+class CreateStudentUserService extends ModelHasP
 {
     public function createStudentUser($data)
     {
@@ -36,26 +34,9 @@ class CreateStudentUserService
         ]);
 
         $newUser->assignRole('Student');
-        $permissions = $this->createModelHasPermission($newStudent);     
-        
+        $permissions = $this->createModelHasPermissions($newStudent);     
+        // dd($permissions);
             
         return redirect('/')->with('success', $data['profile']. ' registered successfully. You can login now');
-    }
-
-
-    public function createModelHasPermission($student)
-    {
-        $roles = Role::all();
-
-        foreach($roles as $role){
-            if($role->name === 'Student'){                
-                foreach ($role->permissions as $key => $value) {                    
-                    $student->permissions()->attach($value->id);
-                }                
-            }
-        }
-
-        return $student->permissions;
-    }
-    
+    }    
 }

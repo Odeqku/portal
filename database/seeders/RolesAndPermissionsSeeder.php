@@ -26,19 +26,19 @@ class RolesAndPermissionsSeeder extends Seeder
         // Permission::create(['name' => 'add courses']);
         // Permission::create(['name' => 'register courses']);
         // Permission::create(['name' => 'review permissions']);
-        Permission::create(['name' => 'view result']);
+        // Permission::create(['name' => 'view result']);
 
         // Assign Permission/s to role
-        $adminRole = Role::findByName('Admin');
+        // $adminRole = Role::findByName('Admin');
         // $adminRole->givePermissionTo('edit courses', 'view profile', 'edit profile', 'view result');
-        $adminRole->givePermissionTo('view result');
+        // $adminRole->givePermissionTo('view result');
 
-        $superAdminRole = Role::findByName('super admin');
+        // $superAdminRole = Role::findByName('super admin');
         // $superAdminRole->givePermissionTo('edit courses', 'view profile', 'edit profile', 'add courses', 'review permissions', 'view result');
-        $superAdminRole->givePermissionTo('view result');
+        // $superAdminRole->givePermissionTo('view result');
 
-        $studentRole = Role::findByName('Student');
+        // $studentRole = Role::findByName('Student');
         // $studentRole->givePermissionTo('view profile', 'edit profile', 'register courses', 'view result');
-        $studentRole->givePermissionTo('view result');
+        // $studentRole->givePermissionTo('view result');
     }
 }
