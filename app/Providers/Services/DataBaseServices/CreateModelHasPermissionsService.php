@@ -1,24 +1,21 @@
 <?php 
     namespace App\Providers\Services\DataBaseServices;
+    use App\Models\Admin;
+    use App\Models\Student;
     use Spatie\Permission\Models\Role;
 
 
 
     class createModelHasPermissionsService
     {
-        public function createModelHasPermissions($model)
+        public function createModelHasPermissions(Student | Admin $model)
         {            
-            $rol_e = $model instanceOf Student ? 'Student' : 'Admin';
-    
-            foreach(Role::all() as $role){
-                
-                    if($role->name === $rol_e){                
-                        foreach ($role->permissions as $key => $value) {                    
-                            $model->permissions()->attach($value->id);
-                        }
-                        break; // I am working on the assumption that no two or more roles can be mutually inclusive               
-                    }             
-            }
+            $role = $model instanceOf Student ? Role::where('name', 'Student')
+                    ->first() : Role::where('name', 'Admin')->first();
+                                    
+            foreach ($role->permissions as $key => $value) {                    
+                $model->permissions()->attach($value->id);
+            }                   
     
             return $model->permissions;
         }

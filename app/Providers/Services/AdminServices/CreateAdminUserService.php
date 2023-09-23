@@ -4,7 +4,6 @@ use App\Models\Admin;
 use App\Models\AdminToken;
 use App\Models\Profile;
 use App\Providers\Services\DataBaseServices\createModelHasPermissionsService as ModelHasP;
-use Spatie\Permission\Models\Role;
 
 
 class CreateAdminUserService extends ModelHasP
@@ -36,7 +35,7 @@ class CreateAdminUserService extends ModelHasP
         $permissions = $this->createModelHasPermissions($admin);        
 
         return redirect('/')
-        ->with('success', $data['profile']. ' registered successfully. You can loging now');
+        ->with('success', $data['profile']. ' registered successfully. You can log in now');
     
     }    
 }
